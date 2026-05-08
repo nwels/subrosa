@@ -1,5 +1,9 @@
 # Prototype Web
 
+<p>
+  <a href="https://nwels.github.io/subrosa" target="_blank" rel="noopener noreferrer" style="background: white; color: black; padding: 10px 18px; border-radius: 999px; text-decoration: none; font-weight: 700; display: inline-block;">Preview</a>
+</p>
+
 ## What is this project about?
 
 This is a prototype web project designed as a social-style confession platform with Firebase-backed logging and interactive frontend animation. It blends a posts/comments feed experience with a styled user interface and a structured, animated presentation.
