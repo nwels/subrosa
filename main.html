@@ -453,13 +453,7 @@ button:active, input[type="button"]:active, input[type="submit"]:active {
 
 .comment-button {
     display: none;
-}
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
-    color: white;
-    font-family: 'Cinzel', serif;
-    font-size: 12px;
-    cursor: pointer;
+
     transition: all 0.3s ease;
 }
 
@@ -1437,16 +1431,7 @@ const storage = firebase.storage();
                                 </div>
                             `;
                             
-                            // Create a temporary container to find and update the post
-                            const tempDiv = document.createElement('div');
-                            tempDiv.innerHTML = postHTML;
-                            const existingPost = feed.querySelector(`[data-post-id="${docId}"]`);
-                            if (existingPost) {
-                                existingPost.replaceWith(tempDiv.firstElementChild);
-                            } else {
-                                tempDiv.firstElementChild.setAttribute('data-post-id', docId);
-                                feed.appendChild(tempDiv.firstElementChild);
-                            }
+                            feed.innerHTML += postHTML;
                         });
                     });
                 }
