@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>subrosa</title>
+<link rel="icon" href="logo.png">
+<link rel="shortcut icon" href="logo.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+    touch-action: manipulation;
+    font-family: 'Cinzel', serif;
+    color: white;
+}
+
+/* present screen */
+#presentText {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    background: black;
+    letter-spacing: 3px;
+    text-align: center;
+
+    opacity: 0;
+    transition: opacity 2.5s ease;
+}
+
+#presentText .loading {
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+/* intro */
+#container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logo {
+    width: 140px;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: spin 3s linear infinite;
+    transition: opacity 2s ease, transform 4s ease;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1); }
+}
+
+#glitch {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.02) 0px,
+        rgba(255,255,255,0.02) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    opacity: 0.1;
+}
+
+/* confesio button */
+#confesio {
+    position: absolute;
+    bottom: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 28px;
+
+    font-family: 'Cinzel', serif;
+    letter-spacing: 3px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: white;
+
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+
+    opacity: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+#confesio::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.6s;
+}
+
+#confesio:hover::before { left: 100%; }
+
+#confesio:hover {
+    transform: translateX(-50%) scale(1.08);
+    box-shadow: 0 0 25px rgba(255,255,255,0.12);
+}
+
+#confesio:active {
+    transform: translateX(-50%) scale(0.96);
+}
+
+/* note screen */
+#noteScreen {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #0a0a0a, #000);
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.note {
+    max-width: 420px;
+    padding: 40px 30px;
+
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+
+    backdrop-filter: blur(12px);
+
+    line-height: 1.6;
+    letter-spacing: 1.2px;
+    text-align: center;
+
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.note.initial {
+    animation: fadeIn 1.8s ease forwards;
+}
+
+.note.visible {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 20px;
+    letter-spacing: 3px;
+}
+
+.text {
+    font-size: 14px;
+    opacity: 0.85;
+}
+
+.continue {
+    margin-top: 30px;
+    padding: 12px 28px;
+
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+
+    color: white;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 3px;
+
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.continue::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.6s;
+}
+
+.continue:hover::before { left: 100%; }
+
+.continue:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(255,255,255,0.12);
+}
+
+.continue:active {
+    transform: scale(0.96);
+}
+
+.language-toggle {
+    font-size: 12px;
+    text-decoration: underline;
+    color: gray;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 0;
+    transition: color 0.2s ease;
+    background: none;
+    border: none;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 1px;
+    display: block;
+    width: 100%;
+}
+
+.language-toggle:hover {
+    color: #d0d0d0;
+}
+
+@keyframes slideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(20px); }
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fadeInOnly {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.note.exit {
+    animation: slideOut 0.5s ease forwards;
+}
+
+.note.enter {
+    animation: slideIn 0.5s ease forwards;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Mobile: fade only, no slide */
+@media (max-width: 768px) {
+    .note.exit {
+        animation: fadeOut 0.5s ease forwards;
+    }
+
+    .note.enter {
+        animation: fadeInOnly 0.5s ease forwards;
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- intro -->
+<div id="container">
+    <img id="logo" src="logo.png">
+</div>
+
+<div id="glitch"></div>
+
+<button id="confesio" onclick="goToNote()">confesio</button>
+
+<!-- note -->
+<div id="noteScreen">
+    <div class="container">
+        <div class="note" id="noteContent">
+            <div class="title">SUB ROSA</div>
+
+            <div class="text" id="noteText">
+                before you proceed, understand this:<br><br>
+                what is spoken here is not meant to be traced.<br><br>
+                you may remain unnamed, or choose to be seen.<br><br>
+                once submitted, your confession cannot be undone.<br><br>
+                every entry will be visible for 120 days before entering the archive — where it will remain.<br><br>
+                this space allows expression without identity, but not without consequence.<br><br>
+                this is where you can share everything you want, no moderation, no judgement, no trace.
+            </div>
+
+            <button class="language-toggle" id="langToggle" onclick="toggleLanguage()">bahasa melayu</button>
+
+            <button class="continue" onclick="goToConfession()">continue</button>
+        </div>
+    </div>
+</div>
+
+<!-- present screen -->
+<div id="presentText">
+    <div id="presentMessage">SM St John Presents..</div>
+    <div class="loading" id="loadingText"></div>
+</div>
+
+<audio id="bg" src="spooky.mp3"></audio>
+
+<script>
+
+let flickerInterval = null;
+
+/* intro animation */
+function startIntro() {
+    const logo = document.getElementById("logo");
+    const audio = document.getElementById("bg");
+    const confesio = document.getElementById("confesio");
+
+    audio.play().catch(()=>{});
+    logo.style.opacity = 1;
+
+    setTimeout(() => {
+        logo.style.transform = "scale(1.2)";
+    }, 500);
+
+    setTimeout(() => {
+        confesio.style.opacity = 1;
+
+        let showSchool = false;
+
+        flickerInterval = setInterval(() => {
+            showSchool = !showSchool;
+            logo.src = showSchool ? "schoollogoD.png" : "logo.png";
+        }, 200);
+
+        setTimeout(() => {
+            clearInterval(flickerInterval);
+            logo.src = "logo.png";
+        }, 3000);
+
+    }, 6000);
+
+    document.body.onclick = null;
+}
+
+// Auto-start intro on page load
+window.addEventListener("load", startIntro);
+
+/* open note */
+function goToNote() {
+    clearInterval(flickerInterval);
+    document.getElementById("logo").style.opacity = 0;
+    document.getElementById("confesio").style.opacity = 0;
+    document.getElementById("noteScreen").style.display = "block";
+    document.getElementById("noteContent").classList.add("initial");
+}
+
+/* toggle language */
+let currentLanguage = 'en';
+
+const translations = {
+    en: {
+        text: 'before you proceed, understand this:<br><br>what is spoken here is not meant to be traced.<br><br>you may remain unnamed, or choose to be seen.<br><br>once submitted, your confession cannot be undone.<br><br>every entry will be visible for 120 days before entering the archive — where it will remain.<br><br>this space allows expression without identity, but not without consequence.<br><br>this is where you can share everything you want, no moderation, no judgement, no trace.',
+        toggle: 'bahasa melayu'
+    },
+    ms: {
+        text: 'sebelum anda meneruskan, fahami ini:<br><br>apa yang diucapkan di sini tidak dimaksudkan untuk dilacak.<br><br>anda boleh kekal tanpa nama, atau pilih untuk dilihat.<br><br>setelah dikemukakan, pengakuan anda tidak dapat dibatalkan.<br><br>setiap entri akan dapat dilihat selama 120 hari sebelum memasuki arkib — di mana ia akan kekal.<br><br>ruang ini membenarkan ekspresi tanpa identiti, tetapi bukan tanpa akibat.<br><br>ini adalah tempat anda boleh berkongsi semua yang anda inginkan, tanpa moderasi, tanpa penghakiman, tanpa jejak.',
+        toggle: 'english'
+    }
+};
+
+function toggleLanguage() {
+    const noteContent = document.getElementById('noteContent');
+    const noteText = document.getElementById('noteText');
+    const langToggle = document.getElementById('langToggle');
+    
+    // Remove initial animation class
+    noteContent.classList.remove('initial');
+    
+    // Add exit animation
+    noteContent.classList.add('exit');
+    
+    setTimeout(() => {
+        // Toggle language
+        currentLanguage = currentLanguage === 'en' ? 'ms' : 'en';
+        
+        // Update text and button
+        noteText.innerHTML = translations[currentLanguage].text;
+        langToggle.innerText = translations[currentLanguage].toggle;
+        
+        // Reset animation and add enter
+        noteContent.classList.remove('exit');
+        noteContent.classList.add('enter');
+        
+        setTimeout(() => {
+            noteContent.classList.remove('enter');
+            noteContent.classList.add('visible');
+        }, 500);
+    }, 500);
+}
+
+/* continue flow */
+function goToConfession() {
+    document.getElementById("logo").style.opacity = 0;
+    document.getElementById("noteScreen").style.display = "none";
+
+    const present = document.getElementById("presentText");
+    const msg = document.getElementById("presentMessage");
+    const loading = document.getElementById("loadingText");
+
+    present.style.display = "flex";
+    present.style.opacity = 1;
+
+    msg.style.opacity = 0;
+    msg.style.display = "block";
+    loading.style.display = "none";
+
+    setTimeout(() => {
+        msg.style.transition = "opacity 2.5s ease";
+        msg.style.opacity = 1;
+    }, 100);
+
+    setTimeout(() => {
+        msg.style.opacity = 0;
+    }, 4000);
+
+    setTimeout(() => {
+        msg.style.display = "none";
+        loading.style.display = "block";
+
+        let frames = ["Loading", "Loading.", "Loading..", "Loading...", "Loading..", "Loading.", "Loading"];
+        let i = 0;
+
+        const anim = setInterval(() => {
+            loading.innerText = frames[i % frames.length];
+            i++;
+        }, 500);
+
+        const loopTime = 500 * frames.length;
+
+        setTimeout(() => {
+            clearInterval(anim);
+            loading.innerText = "Loading";
+
+            setTimeout(() => {
+                window.location.href = "main.html";
+            }, 3000);
+
+        }, loopTime);
+
+    }, 5000);
+}
+
+</script>
+
+</body>
+</html>
+
+<!-- 
+   last updated on 4/5/2026 4:30 PM.
+   performance - as expected, meets my expectations, no major issues.
+   design - as expected, meets my expectations, no major issues.
+   next steps - add backend, add confession submission form, add confession display page.
+   made by noelsworkpage@gmail.com, guided by brandon wong 5ss1, inspired by girigo,
+   guided by chatgpt and copilot for final touches and questions
+-->
